@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#08111f">
+<title>BendersMC Command & Bending Guide</title>
+<style>
+:root{--bg:#060b14;--panel:#0d1727;--panel2:#111f34;--text:#eef6ff;--muted:#9fb1c7;--line:#22344d;--cyan:#38bdf8;--blue:#2563eb;--purple:#a855f7;--fire:#fb5b2a;--water:#22d3ee;--earth:#84cc16;--air:#e5f7ff}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(circle at 50% -10%,#173258 0,#08111f 38%,#050911 100%);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;line-height:1.55}
+a{color:inherit}.top{position:sticky;top:0;z-index:50;background:rgba(5,9,17,.86);backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
+.nav{max-width:1180px;margin:auto;padding:12px 18px;display:flex;align-items:center;gap:18px}.logo{font-weight:900;font-size:20px;white-space:nowrap}.logo span{color:var(--cyan)}nav{display:flex;gap:8px;overflow:auto}nav a{padding:8px 11px;border-radius:10px;text-decoration:none;color:var(--muted);white-space:nowrap}nav a:hover{background:#14243a;color:#fff}
+.hero{max-width:1180px;margin:auto;padding:70px 18px 45px;text-align:center}.badge{display:inline-flex;padding:7px 12px;border:1px solid #31547a;border-radius:999px;background:#0c1a2d;color:#9edfff;font-size:13px;font-weight:800}.hero h1{font-size:clamp(42px,8vw,82px);line-height:.95;margin:20px 0 18px;letter-spacing:-4px;background:linear-gradient(90deg,#fff,#67d7ff,#a78bfa);-webkit-background-clip:text;color:transparent}.hero p{max-width:720px;margin:0 auto 26px;color:var(--muted);font-size:18px}.buttons{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}.btn{border:1px solid #31547a;background:#10223a;color:#fff;padding:11px 16px;border-radius:12px;text-decoration:none;font-weight:800;cursor:pointer}.btn.primary{background:linear-gradient(135deg,#2563eb,#0891b2);border-color:#4bc9ff}
+.status{max-width:980px;margin:0 auto 45px;padding:16px;border:1px solid #29415f;background:rgba(13,23,39,.8);border-radius:18px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.stat{text-align:center}.stat b{display:block;font-size:18px}.stat small{color:var(--muted)}
+main{max-width:1180px;margin:auto;padding:0 18px 70px}.section{margin:65px 0}.section h2{font-size:32px;margin:0 0 8px}.section>p{color:var(--muted);margin-top:0}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}.card{background:linear-gradient(145deg,rgba(17,31,52,.95),rgba(9,18,31,.96));border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:0 12px 40px rgba(0,0,0,.18)}.card h3{margin:0 0 7px}.card p{color:var(--muted)}.command{display:flex;gap:10px;align-items:center;justify-content:space-between;border:1px solid #263c57;background:#091321;border-radius:12px;padding:12px;margin:9px 0}.command code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;color:#8ee7ff;overflow:auto}.copy{background:#172b44;border:1px solid #315070;color:#fff;border-radius:9px;padding:7px 10px;cursor:pointer;white-space:nowrap}.copy.done{background:#166534}
+.search{width:100%;padding:15px 16px;border-radius:13px;border:1px solid #304764;background:#091321;color:#fff;font-size:16px;outline:none;margin:12px 0 18px}.search:focus{border-color:#43c7ff}.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:15px}.filter{cursor:pointer;border:1px solid #304764;background:#0b1727;color:#b7c8da;border-radius:999px;padding:7px 11px}.filter.active{background:#164a69;color:#fff;border-color:#42c5ff}
+.cmdcard{padding:0;overflow:hidden}.cmdhead{padding:17px 18px;display:flex;justify-content:space-between;gap:12px;align-items:center;cursor:pointer}.cmdhead:hover{background:#12243a}.cmdname{font-family:monospace;color:#8ee7ff;font-size:16px;font-weight:800}.tag{font-size:11px;padding:4px 7px;border-radius:999px;background:#1c2d43;color:#b9cce0}.details{display:none;padding:0 18px 18px;border-top:1px solid var(--line);color:var(--muted)}.details.show{display:block}.kbd{font-family:monospace;background:#050b13;border:1px solid #293c54;padding:2px 6px;border-radius:5px;color:#d9ecff}
+.elements{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.element{min-height:180px;position:relative;overflow:hidden}.element:after{content:"";position:absolute;width:120px;height:120px;border-radius:50%;right:-35px;top:-35px;background:var(--el);filter:blur(5px);opacity:.16}.element.air{--el:#dff6ff}.element.water{--el:#22d3ee}.element.fire{--el:#fb5b2a}.element.earth{--el:#84cc16}.icon{font-size:38px}.ability{border-left:3px solid var(--cyan);padding:11px 14px;margin:9px 0;background:#091421;border-radius:0 10px 10px 0}.ability b{color:#e9f7ff}.ability small{display:block;color:var(--muted);margin-top:3px}
+.video{border-radius:16px;overflow:hidden;border:1px solid var(--line);background:#050b13}.video iframe{width:100%;aspect-ratio:16/9;border:0;display:block}.video-info{padding:14px}.video-info b{display:block}.video-info span{color:var(--muted);font-size:13px}
+.notice{padding:15px 17px;border-left:4px solid #38bdf8;background:#0a1a2b;border-radius:10px;color:#c8d9eb}.warn{border-left-color:#f59e0b}
+.steps{counter-reset:step}.step{display:flex;gap:14px;margin:13px 0}.step:before{counter-increment:step;content:counter(step);flex:none;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:#153b5c;color:#75dcff;font-weight:900}
+footer{border-top:1px solid var(--line);padding:30px 18px;color:var(--muted);text-align:center;font-size:13px}
+@media(max-width:800px){.grid{grid-template-columns:1fr}.elements{grid-template-columns:repeat(2,1fr)}.status{grid-template-columns:1fr}.hero h1{letter-spacing:-2px}.nav{align-items:flex-start;flex-direction:column;gap:7px}}
+@media(max-width:480px){.elements{grid-template-columns:1fr}.command{align-items:flex-start;flex-direction:column}.copy{width:100%}}
+</style>
+</head>
+<body>
+<header class="top"><div class="nav">
+<div class="logo">Benders<span>MC</span> Guide</div>
+<nav><a href="#start">Start</a><a href="#commands">Commands</a><a href="#elements">Elements</a><a href="#videos">Videos</a><a href="#survival">Survival</a></nav>
+</div></header>
+
+<section class="hero" id="start">
+<span class="badge">JAVA + BEDROCK • COMMUNITY GUIDE</span>
+<h1>Master BendersMC</h1>
+<p>Your interactive guide to commands, bending, abilities and survival on BendersMC.</p>
+<div class="buttons">
+<a class="btn primary" href="#commands">Explore Commands</a>
+<a class="btn" href="https://shop.bendersmc.co/howtobend" target="_blank" rel="noopener">Official Guide</a>
+<a class="btn" href="https://discord.gg/bendersmc" target="_blank" rel="noopener">Discord</a>
+</div>
+</section>
+
+<div class="status">
+<div class="stat"><b>play.bendersmc.co</b><small>Java &amp; Bedrock server</small></div>
+<div class="stat"><b>19132</b><small>Bedrock port</small></div>
+<div class="stat"><b>1.21+</b><small>Shown by current BendersMC video</small></div>
+</div>
+
+<main>
+<section class="section">
+<h2>🚀 Get Started</h2><p>The fastest route from joining the server to using your first bending ability.</p>
+<div class="grid">
+<div class="card"><div class="steps">
+<div class="step">Join <b>play.bendersmc.co</b>. Bedrock players use port <b>19132</b>.</div>
+<div class="step">Use <code>/spawn</code> or <code>/choose</code> to open the bending selection.</div>
+<div class="step">Pick your element and choose the staff loadout or manually bind abilities.</div>
+<div class="step">Use <code>/b bind ability slot</code> to put moves on your hotbar.</div>
+<div class="step">Use <code>/b help ability</code> when you need the controls for a specific move.</div>
+</div></div>
+<div class="card">
+<h3>🎮 Java &amp; Bedrock</h3>
+<p>BendersMC advertises cross-platform Java + Bedrock play. Bedrock connection uses the same server address with port 19132.</p>
+<div class="command"><code>play.bendersmc.co</code><button class="copy" onclick="copyText('play.bendersmc.co',this)">Copy IP</button></div>
+<div class="command"><code>19132</code><button class="copy" onclick="copyText('19132',this)">Copy Port</button></div>
+</div>
+</div>
+</section>
+
+<section class="section" id="commands">
+<h2>⌨️ Command Library</h2>
+<p>Search, filter and open a command to see what it does. Only commands documented by BendersMC sources are marked as verified.</p>
+<input id="search" class="search" placeholder="Search commands, e.g. bind, spawn, rtp, kit..." oninput="renderCommands()">
+<div class="filters">
+<button class="filter active" onclick="setFilter('all',this)">All</button>
+<button class="filter" onclick="setFilter('bending',this)">Bending</button>
+<button class="filter" onclick="setFilter('survival',this)">Survival</button>
+<button class="filter" onclick="setFilter('rank',this)">Rank / Utility</button>
+</div>
+<div id="commandGrid" class="grid"></div>
+</section>
+
+<section class="section" id="elements">
+<h2>🌀 Elements &amp; Abilities</h2>
+<p>Element information below follows the currently published BendersMC documentation. Empty ability names are not invented; use <code>/b display &lt;element&gt;</code> and <code>/b help &lt;ability&gt;</code> in-game for the latest details.</p>
+<div class="elements">
+<div class="card element air"><div class="icon">🌪️</div><h3>Air</h3><p>Fast movement, mobility and quick attacks.</p><span class="tag">Documented abilities</span></div>
+<div class="card element water"><div class="icon">💧</div><h3>Water</h3><p>Check the live in-game ability display for the current move list.</p><span class="tag">Live server reference</span></div>
+<div class="card element fire"><div class="icon">🔥</div><h3>Fire</h3><p>Check the live in-game ability display for the current move list.</p><span class="tag">Live server reference</span></div>
+<div class="card element earth"><div class="icon">🪨</div><h3>Earth</h3><p>Check the live in-game ability display for the current move list.</p><span class="tag">Live server reference</span></div>
+</div>
+<div class="card" style="margin-top:16px">
+<h3>🌪️ Air — documented controls</h3>
+<div class="ability"><b>AirSpout</b><small>Left click creates a stream below you. Shift/crouch moves down; jump moves up. Click again to deactivate.</small></div>
+<div class="ability"><b>Tornado</b><small>Creates a tornado. Shift/crouch while looking where you want it.</small></div>
+<div class="ability"><b>Flatulate</b><small>Launches the user into the air. Shift/crouch to activate.</small></div>
+<div class="ability"><b>Zephyr</b><small>Hold shift/crouch to form an air-particle circle that applies slow falling.</small></div>
+<div class="ability"><b>Air Blast</b><small>Click pushes enemies away. Shift/crouch creates an air orb that drags what you click toward it.</small></div>
+<div class="ability"><b>Air Suction</b><small>Click pulls enemies toward you. Shift/crouch creates an air orb that pulls targets toward it.</small></div>
+<div class="ability"><b>Air Glide</b><small>While airborne, shift/crouch to glide; shift/crouch again or land to stop.</small></div>
+<div class="ability"><b>Air Scooter • Meditate • Air Lift • Air Jets</b><small>Names listed by the official guide; use <code>/b help &lt;ability&gt;</code> in-game for the current instructions.</small></div>
+</div>
+</section>
+
+<section class="section" id="videos">
+<h2>🎥 BendersMC Videos</h2>
+<p>These are embedded from the verified BendersMC YouTube channel. The videos remain hosted by YouTube.</p>
+<div class="grid">
+<div class="video"><iframe src="https://www.youtube.com/embed/3bASPzmPXnk" title="WE'RE SO BACK - BendersMC" allowfullscreen loading="lazy"></iframe><div class="video-info"><b>WE'RE SO BACK (BendersMC)</b><span>Official BendersMC video • connection information in its description</span></div></div>
+<div class="video"><iframe src="https://www.youtube.com/embed/6wefktOUnEA" title="BendersMC - Best Element for Survival!" allowfullscreen loading="lazy"></iframe><div class="video-info"><b>BendersMC — Best Element for Survival!</b><span>Official BendersMC video • element-focused content</span></div></div>
+</div>
+</section>
+
+<section class="section" id="survival">
+<h2>🌎 Survival Guide</h2>
+<div class="grid">
+<div class="card"><h3>/rtp</h3><p>After choosing an element, BendersMC's Survival guide says you can use <code>/rtp</code> to enter the world. You can also use the “Enter World” NPC at spawn.</p></div>
+<div class="card"><h3>Land claims</h3><p>Get a golden shovel, mark one corner with right-click, then mark the other corner with right-click. Claim blocks are earned through playtime.</p></div>
+<div class="card"><h3>Player warps</h3><p>Survival includes player warps that can be used for stores, public farms and other community locations.</p></div>
+<div class="card"><h3>Custom gameplay</h3><p>BendersMC describes Survival as vanilla-style gameplay with bending, custom items, multiple worlds and a large world to explore.</p></div>
+</div>
+</section>
+
+<section class="section">
+<h2>📚 Official References</h2>
+<div class="grid">
+<a class="card" href="https://shop.bendersmc.co/howtobend" target="_blank" rel="noopener" style="text-decoration:none"><h3>How to Bend</h3><p>Official instructions for choosing an element, binding abilities, displaying abilities and getting ability help.</p></a>
+<a class="card" href="https://shop.bendersmc.co/survivalservers" target="_blank" rel="noopener" style="text-decoration:none"><h3>Survival Servers</h3><p>Official Survival information covering /rtp, claims, player warps and server features.</p></a>
+<a class="card" href="https://shop.bendersmc.co/air" target="_blank" rel="noopener" style="text-decoration:none"><h3>Air Bending</h3><p>Official Air ability descriptions and controls.</p></a>
+<a class="card" href="https://shop.bendersmc.co/wiki" target="_blank" rel="noopener" style="text-decoration:none"><h3>Official Game Wiki</h3><p>BendersMC's official wiki entry point.</p></a>
+</div>
+</section>
+
+<div class="notice"><b>⚠️ Accuracy note:</b> BendersMC can change commands and abilities as the server updates. This guide deliberately does not pretend undocumented commands are official. For a move's exact current controls, <code>/b help &lt;ability&gt;</code> is the safest live reference.</div>
+</main>
+
+<footer>
+BendersMC Command &amp; Bending Guide • Community-made fan guide • Not affiliated with Mojang/Microsoft or BendersMC.
+</footer>
+
+<script>
+const commands=[
+{name:'/choose',cat:'bending',alias:'',desc:'Opens the bending selection so you can choose an element.',use:'/choose'},
+{name:'/b bind <ability> [1-9]',cat:'bending',alias:'',desc:'Binds an ability to your hotbar. You can include a slot number, such as /b bind airspout 4.',use:'/b bind airspout 4'},
+{name:'/b display <element>',cat:'bending',alias:'/b d <element>',desc:'Displays the abilities for an element.',use:'/b display air'},
+{name:'/b help <ability>',cat:'bending',alias:'/b h <ability>',desc:'Shows instructions for using a specific ability.',use:'/b help airspout'},
+{name:'/spawn',cat:'survival',alias:'',desc:'Returns you to spawn. BendersMC also documents using spawn to access the bending GUI.',use:'/spawn'},
+{name:'/rtp',cat:'survival',alias:'',desc:'Randomly teleports you into the Survival world after choosing an element.',use:'/rtp'},
+{name:'/vocalmenu',cat:'bending',alias:'',desc:'Opens the sound selection menu for Air sub-element Vocal Mimicry.',use:'/vocalmenu'},
+{name:'/enderchest',cat:'rank',alias:'',desc:'Utility command listed on BendersMC rank pages.',use:'/enderchest'},
+{name:'/workbench',cat:'rank',alias:'',desc:'Utility command listed on BendersMC rank pages.',use:'/workbench'},
+{name:'/anvil',cat:'rank',alias:'',desc:'Utility command listed on BendersMC rank pages.',use:'/anvil'},
+{name:'/grindstone',cat:'rank',alias:'',desc:'Utility command listed on BendersMC rank pages.',use:'/grindstone'},
+{name:'/smithingtable',cat:'rank',alias:'',desc:'Utility command listed on BendersMC rank pages.',use:'/smithingtable'},
+{name:'/loom',cat:'rank',alias:'',desc:'Utility command listed on higher BendersMC rank pages.',use:'/loom'},
+{name:'/stonecutter',cat:'rank',alias:'',desc:'Utility command listed on higher BendersMC rank pages.',use:'/stonecutter'},
+{name:'/kit <name>',cat:'rank',alias:'',desc:'Selects a listed rank kit when your account has access to that kit.',use:'/kit pro'},
+{name:'/chatcolor',cat:'rank',alias:'',desc:'Opens or controls chat colors for eligible ranks.',use:'/chatcolor'},
+{name:'/lay',cat:'rank',alias:'',desc:'Cosmetic AFK-lobby command listed on rank pages.',use:'/lay'},
+{name:'/spin',cat:'rank',alias:'',desc:'Cosmetic AFK-lobby command listed on rank pages.',use:'/spin'}
+];
+let currentFilter='all';
+function setFilter(f,el){currentFilter=f;document.querySelectorAll('.filter').forEach(x=>x.classList.remove('active'));el.classList.add('active');renderCommands()}
+function renderCommands(){
+const q=document.getElementById('search').value.toLowerCase();
+const list=commands.filter(c=>(currentFilter==='all'||c.cat===currentFilter)&&(`${c.name} ${c.alias} ${c.desc}`.toLowerCase().includes(q)));
+document.getElementById('commandGrid').innerHTML=list.map((c,i)=>`
+<div class="card cmdcard">
+<div class="cmdhead" onclick="toggle(${i})"><div><div class="cmdname">${c.name}</div><span class="tag">${c.cat}</span></div><span>＋</span></div>
+<div class="details" id="d${i}"><p>${c.desc}</p>${c.alias?`<p><b>Alias:</b> <code>${c.alias}</code></p>`:''}<div class="command"><code>${c.use}</code><button class="copy" onclick="copyText('${c.use.replace(/'/g,"\\'")}',this)">Copy</button></div></div>
+</div>`).join('') || '<div class="card"><h3>No results</h3><p>Try another search.</p></div>';
+}
+function toggle(i){document.getElementById('d'+i).classList.toggle('show')}
+async function copyText(t,b){try{await navigator.clipboard.writeText(t)}catch(e){const x=document.createElement('textarea');x.value=t;document.body.appendChild(x);x.select();document.execCommand('copy');x.remove()}b.textContent='Copied ✓';b.classList.add('done');setTimeout(()=>{b.textContent='Copy';b.classList.remove('done')},1200)}
+renderCommands();
+</script>
+</body>
+</html>
