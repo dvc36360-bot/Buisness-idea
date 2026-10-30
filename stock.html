@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#263e2b">
+  <meta name="description" content="Live stock catalogue for Village Garden Nursery.">
+  <title>Our Stock | Village Garden Nursery</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .live-stock-summary{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px;margin:0 0 24px;padding:20px 22px;background:#e3e9d9;border:1px solid #dce5d7;border-radius:12px}
+    .live-stock-summary strong{font-size:1.7rem;color:#263e2b}
+    .live-status{font-size:.88rem;color:#52644f}
+    .live-stock-card{overflow:hidden;background:#fffefa;border:1px solid #e5e0d5;border-radius:13px;box-shadow:0 4px 18px rgba(38,62,43,.06)}
+    .live-stock-photo{height:210px;position:relative;display:flex;align-items:center;justify-content:center;background:linear-gradient(145deg,#e9eee4,#dce6d7);color:#6b8067;font-size:3rem;overflow:hidden}
+    .live-stock-photo img{width:100%;height:100%;object-fit:cover}
+    .live-stock-qty{position:absolute;left:12px;bottom:12px;padding:7px 11px;border-radius:30px;background:#263e2b;color:#fff;font-size:.78rem;font-weight:700;box-shadow:0 2px 8px #0002}
+    .live-stock-qty.out{background:#8a3c35}
+    .live-stock-details{padding:16px 15px 18px;text-align:left}
+    .live-stock-details h3{font:600 1.06rem 'DM Sans',Arial,sans-serif;margin:6px 0 8px;color:#263e2b}
+    .live-stock-price{font-weight:700;color:#263e2b;font-size:1.08rem}
+    .live-stock-description{color:#687365;font-size:.92rem;line-height:1.55;margin:8px 0 12px}
+    .live-stock-error{padding:18px;background:#fff4ed;border:1px solid #f0d4c4;border-radius:12px;color:#754632}
+    .live-stock-empty{padding:28px;text-align:center;color:#687365;background:#f6f4ec;border:1px solid #e5e0d5;border-radius:14px;grid-column:1/-1}
+    .live-stock-updated{font-size:.8rem;color:#687365;margin-top:8px}
+  </style>
+</head>
+<body>
+<div class="site-shell">
+  <div class="announcement">A little more green, a little more living · Welcome to Village Garden Nursery</div>
+  <header>
+    <nav class="nav">
+      <a class="brand" href="index.html"><span class="brand-mark">❧</span><span class="brand-name">Village Garden<small>N U R S E R Y</small></span></a>
+      <div class="links"><a href="index.html">Home</a><a href="stock.html" aria-current="page">Stock</a><a href="contact.html">Contact</a><a href="location.html">Location</a></div>
+      <div class="nav-actions"><a class="icon-link" href="stock.html" aria-label="Search stock">⌕</a><a class="icon-link" href="contact.html" aria-label="Contact">♙</a><a class="icon-link" href="stock.html" aria-label="Stock">🛒<span class="cart-count">0</span></a><button class="menu-btn" aria-label="Open menu" aria-expanded="false">☰</button></div>
+    </nav>
+    <div class="mobile-links"><a href="index.html">Home</a><a href="stock.html">Stock</a><a href="contact.html">Contact</a><a href="location.html">Location</a></div>
+  </header>
+  <main>
+    <section class="page-hero"><span class="eyebrow">Fresh from our nursery</span><h1>Our Stock</h1><p>Browse the products currently listed in our live stock sheet. Product availability and prices refresh automatically.</p></section>
+    <section class="section">
+      <div class="live-stock-summary"><div><span class="eyebrow">Total available units</span><br><strong id="totalUnits">—</strong><div class="live-stock-updated" id="lastUpdated">Connecting to live stock…</div></div><span class="live-status" id="connectionStatus">Loading stock</span></div>
+      <div class="stock-tools"><input id="stockSearch" type="search" placeholder="Search plants, pots and more…" aria-label="Search stock"><select id="stockCategory" aria-label="Filter by category"><option value="all">All categories</option></select></div>
+      <div id="stockGrid" class="stock-grid" aria-live="polite"><div class="live-stock-empty">Loading products from the stock sheet…</div></div>
+      <p id="noStock" class="live-stock-empty" hidden>No matching stock found. Try another search.</p>
+      <div id="stockError" class="live-stock-error" hidden></div>
+      <p class="notice">Stock refreshes automatically every 2 minutes. Please contact the nursery to confirm availability before visiting.</p>
+    </section>
+  </main>
+  <footer>
+    <a class="brand" href="index.html"><span class="brand-mark">❧</span><span class="brand-name">Village Garden<small>N U R S E R Y</small></span></a>
+    <p>Thoughtfully selected plants, pots and garden essentials to help your space grow.</p>
+    <div class="footer-links"><a href="index.html">Home</a><a href="stock.html">Stock</a><a href="contact.html">Contact</a><a href="location.html">Location</a></div>
+    <div class="copyright">© <span data-year></span> Village Garden Nursery · Designed with care</div>
+  </footer>
+</div>
+<script src="script.js"></script>
+<script>
+(() => {
+  // Published Google Sheets CSV endpoint (same spreadsheet ID as the supplied pubhtml link).
+  const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSQpZ1E8r7VqAkYPaFT0voC92RsgBw_h_Q4YWYQMwUSiODkzTZ4xMNdQJPb3ldnvgTzqfWdibSnqw94/pub?output=csv';
+  const REFRESH_MS = 120000;
+  const grid = document.getElementById('stockGrid');
+  const search = document.getElementById('stockSearch');
+  const category = document.getElementById('stockCategory');
+  const total = document.getElementById('totalUnits');
+  const updated = document.getElementById('lastUpdated');
+  const status = document.getElementById('connectionStatus');
+  const errorBox = document.getElementById('stockError');
+  const noStock = document.getElementById('noStock');
+  let products = [];
+
+  function parseCSV(text) {
+    const rows = []; let row = [], cell = '', quoted = false;
+    for (let i = 0; i < text.length; i++) {
+      const ch = text[i], next = text[i + 1];
+      if (ch === '"' && quoted && next === '"') { cell += '"'; i++; }
+      else if (ch === '"') quoted = !quoted;
+      else if (ch === ',' && !quoted) { row.push(cell); cell = ''; }
+      else if ((ch === '\n' || ch === '\r') && !quoted) {
+        if (ch === '\r' && next === '\n') i++;
+        row.push(cell); if (row.some(v => v.trim() !== '')) rows.push(row);
+        row = []; cell = '';
+      } else cell += ch;
+    }
+    if (cell.length || row.length) { row.push(cell); rows.push(row); }
+    return rows;
+  }
+  function normalise(value) { return String(value || '').trim().toLowerCase().replace(/[^a-z0-9]/g, ''); }
+  function money(value) {
+    const raw = String(value || '').trim();
+    if (!raw) return 'Price on request';
+    return /^r\s?/i.test(raw) ? raw : (Number.isFinite(Number(raw.replace(/[, ]/g,''))) ? 'R' + Number(raw.replace(/[, ]/g,'')).toFixed(2) : raw);
+  }
+  function safeImage(url) { try { const u = new URL(url); return ['http:','https:'].includes(u.protocol) ? u.href : ''; } catch { return ''; } }
+  function render() {
+    const q = search.value.trim().toLowerCase(), c = category.value;
+    const filtered = products.filter(p => (c === 'all' || p.category.toLowerCase() === c) && (p.name + ' ' + p.category + ' ' + p.description).toLowerCase().includes(q));
+    grid.innerHTML = '';
+    noStock.hidden = filtered.length !== 0;
+    if (!filtered.length) return;
+    filtered.forEach(p => {
+      const card = document.createElement('article'); card.className = 'live-stock-card';
+      const photo = document.createElement('div'); photo.className = 'live-stock-photo';
+      const imageUrl = safeImage(p.image);
+      if (imageUrl) { const img = document.createElement('img'); img.src = imageUrl; img.alt = p.name; img.loading = 'lazy'; img.onerror = () => { img.remove(); photo.insertAdjacentText('afterbegin', '❧'); }; photo.appendChild(img); }
+      else photo.textContent = '❧';
+      const qty = document.createElement('span'); qty.className = 'live-stock-qty' + (p.quantity <= 0 ? ' out' : ''); qty.textContent = p.quantity <= 0 ? 'Out of stock' : `${p.quantity} in stock`; photo.appendChild(qty);
+      const details = document.createElement('div'); details.className = 'live-stock-details';
+      const label = document.createElement('span'); label.className = 'eyebrow'; label.textContent = p.category || 'Nursery';
+      const name = document.createElement('h3'); name.textContent = p.name || 'Unnamed product';
+      const price = document.createElement('div'); price.className = 'live-stock-price'; price.textContent = money(p.price);
+      const desc = document.createElement('p'); desc.className = 'live-stock-description'; desc.textContent = p.description;
+      details.append(label, name, price); if (p.description) details.appendChild(desc); card.append(photo, details); grid.appendChild(card);
+    });
+  }
+  async function loadStock() {
+    status.textContent = 'Updating…';
+    try {
+      const response = await fetch(CSV_URL + '&_=' + Date.now(), { cache: 'no-store' });
+      if (!response.ok) throw new Error('Could not load the published spreadsheet (HTTP ' + response.status + ').');
+      const rows = parseCSV(await response.text());
+      if (rows.length < 2) throw new Error('No product rows found. Check that the Google Sheet is published as CSV.');
+      const headers = rows.shift().map(normalise);
+      const col = key => headers.indexOf(normalise(key));
+      const get = (r, key) => { const i = col(key); return i >= 0 ? (r[i] || '').trim() : ''; };
+      if (col('ProductName') < 0 || col('Quantity') < 0) throw new Error('The sheet must contain the columns ProductName and Quantity.');
+      products = rows.map(r => ({ name:get(r,'ProductName'), category:get(r,'Category') || 'Other', description:get(r,'Description'), price:get(r,'Price'), quantity:Math.max(0, Number(String(get(r,'Quantity')).replace(/[^0-9.-]/g,'')) || 0), image:get(r,'ImageURL'), active:get(r,'Active').toLowerCase() })).filter(p => p.name && !['false','no','0','inactive'].includes(p.active));
+      total.textContent = products.reduce((sum,p) => sum + p.quantity, 0).toLocaleString();
+      const cats = [...new Set(products.map(p => p.category).filter(Boolean))].sort();
+      const previous = category.value;
+      category.innerHTML = '<option value="all">All categories</option>';
+      cats.forEach(cat => { const opt = document.createElement('option'); opt.value = cat.toLowerCase(); opt.textContent = cat; category.appendChild(opt); });
+      if ([...category.options].some(o => o.value === previous)) category.value = previous;
+      render();
+      status.textContent = 'Live connection'; updated.textContent = 'Last updated: ' + new Date().toLocaleTimeString(); errorBox.hidden = true;
+    } catch (err) {
+      status.textContent = 'Connection issue'; errorBox.hidden = false;
+      errorBox.textContent = 'Stock could not be refreshed: ' + err.message + ' Make sure the spreadsheet is published to the web and its published CSV link is accessible.';
+      if (!products.length) grid.innerHTML = '<div class="live-stock-empty">Stock is temporarily unavailable.</div>';
+    }
+  }
+  search.addEventListener('input', render); category.addEventListener('change', render);
+  loadStock(); setInterval(loadStock, REFRESH_MS);
+})();
+</script>
+</body>
+</html>
