@@ -1,0 +1,20 @@
+JACT-Motorcycle/
+  index.html
+  about.html
+  services.html
+  shop.html
+  shop.js
+  booking.html
+  booking.js
+  contact.html
+  config.js
+  app.js
+  styles.css
+  schema.sql
+  README.md
+  admin/
+    login.html
+    dashboard.html
+    products.html
+    bookings.html
+    admin.js
