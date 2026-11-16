@@ -1,1 +1,255 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Book a Service | JACT Motorcycle</title><link rel="stylesheet" href="styles.css"><script src="config.js"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script defer src="app.js"></script><script defer src="booking.js"></script></head><body><div class="topbar"><div class="container"><span>Request a motorcycle service</span><span>067 625 9831</span></div></div><header class="site-header"><div class="container nav"><a class="brand" href="index.html"><span class="brand-mark">J</span><span>JACT MOTORCYCLE<small>REPAIRS · PARTS · SERVICE</small></span></a><nav class="nav-links"><a href="index.html">Home</a><a href="about.html">About Us</a><a href="services.html">Services</a><a href="shop.html">Spare Parts</a><a class="active" href="booking.html">Book a Service</a><a href="contact.html">Contact</a></nav><button class="menu-btn">☰</button></div></header><main><section class="page-hero"><div class="container"><div class="eyebrow">Service request</div><h1>Let's book your bike in.</h1><p>Send a booking request with your motorcycle details and preferred date. JACT will review it and confirm availability.</p></div></section><section class="section"><div class="container"><form class="form-card" id="bookingForm"><div class="notice">A request is not a confirmed appointment. Your booking is confirmed only after JACT contacts you.</div><div class="form-grid"><div class="field"><label for="name">Full name *</label><input id="name" required maxlength="100"></div><div class="field"><label for="phone">Phone number *</label><input id="phone" required maxlength="30" type="tel"></div><div class="field"><label for="email">Email (optional)</label><input id="email" type="email" maxlength="150"></div><div class="field"><label for="service">Service required *</label><select id="service" required><option value="">Choose a service</option><option>General repair</option><option>Electrical repair</option><option>Maintenance / service</option><option>Spare parts enquiry</option><option>Other</option></select></div><div class="field"><label for="bike">Motorcycle make *</label><input id="bike" required maxlength="80" placeholder="e.g. Yamaha"></div><div class="field"><label for="model">Model / year</label><input id="model" maxlength="100"></div><div class="field"><label for="date">Preferred date *</label><input id="date" type="date" required></div><div class="field"><label for="time">Preferred time</label><select id="time"><option value="">Flexible</option><option>Morning</option><option>Afternoon</option></select></div><div class="field full"><label for="location">Your area / service location</label><input id="location" maxlength="180"></div><div class="field full"><label for="details">Describe the issue *</label><textarea id="details" required maxlength="1500" placeholder="Tell us what is happening with your motorcycle..."></textarea></div></div><div id="bookingStatus" class="status"></div><button class="btn btn-primary" type="submit" style="margin-top:18px">Submit booking request</button></form></div></section></main><footer class="footer"><div class="container"><div class="copyright">© <span data-year></span> JACT Motorcycle.</div></div></footer></body></html>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Book a Service | JACT Motorcycle</title>
+  <meta name="description" content="Book your motorcycle repair, maintenance or service with JACT Motorcycle.">
+
+  <link rel="stylesheet" href="styles.css">
+
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- Website configuration -->
+  <script src="config.js"></script>
+
+  <!-- Shared website JavaScript -->
+  <script defer src="app.js"></script>
+
+  <!-- Booking system -->
+  <script defer src="booking.js?v=3"></script>
+</head>
+
+<body>
+
+  <!-- Top bar -->
+  <div class="topbar">
+    <div class="container">
+      <span>Request a motorcycle service</span>
+      <span>067 625 9831</span>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="container nav">
+
+      <a class="brand" href="index.html">
+        <span class="brand-mark">J</span>
+
+        <span>
+          JACT MOTORCYCLE
+          <small>REPAIRS · PARTS · SERVICE</small>
+        </span>
+      </a>
+
+      <nav class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="about.html">About Us</a>
+        <a href="services.html">Services</a>
+        <a href="shop.html">Spare Parts</a>
+        <a class="active" href="booking.html">Book a Service</a>
+        <a href="contact.html">Contact</a>
+      </nav>
+
+      <button class="menu-btn" type="button" aria-label="Open menu">
+        ☰
+      </button>
+
+    </div>
+  </header>
+
+  <main>
+
+    <!-- Page hero -->
+    <section class="page-hero">
+      <div class="container">
+
+        <div class="eyebrow">Service request</div>
+
+        <h1>Let's book your bike in.</h1>
+
+        <p>
+          Send a booking request with your motorcycle details
+          and preferred date. JACT will review it and confirm availability.
+        </p>
+
+      </div>
+    </section>
+
+    <!-- Booking form -->
+    <section class="section">
+      <div class="container">
+
+        <form class="form-card" id="bookingForm">
+
+          <div class="notice">
+            A request is not a confirmed appointment.
+            Your booking is confirmed only after JACT contacts you.
+          </div>
+
+          <div class="form-grid">
+
+            <!-- Customer details -->
+            <div class="field">
+              <label for="name">Full name *</label>
+              <input
+                id="name"
+                name="name"
+                type="text"
+                required
+                maxlength="100"
+                autocomplete="name"
+                placeholder="Your full name"
+              >
+            </div>
+
+            <div class="field">
+              <label for="phone">Phone number *</label>
+              <input
+                id="phone"
+                name="phone"
+                type="tel"
+                required
+                maxlength="30"
+                autocomplete="tel"
+                placeholder="Your phone number"
+              >
+            </div>
+
+            <div class="field">
+              <label for="email">Email (optional)</label>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                maxlength="150"
+                autocomplete="email"
+                placeholder="Your email address"
+              >
+            </div>
+
+            <!-- Service -->
+            <div class="field">
+              <label for="service">Service required *</label>
+
+              <select id="service" name="service" required>
+                <option value="">Choose a service</option>
+                <option value="General repair">General repair</option>
+                <option value="Electrical repair">Electrical repair</option>
+                <option value="Maintenance / service">Maintenance / service</option>
+                <option value="Spare parts enquiry">Spare parts enquiry</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+
+            <!-- Motorcycle details -->
+            <div class="field">
+              <label for="bike">Motorcycle make *</label>
+              <input
+                id="bike"
+                name="bike"
+                type="text"
+                required
+                maxlength="80"
+                placeholder="e.g. Yamaha"
+              >
+            </div>
+
+            <div class="field">
+              <label for="model">Model / year</label>
+              <input
+                id="model"
+                name="model"
+                type="text"
+                maxlength="100"
+                placeholder="e.g. R3 2022"
+              >
+            </div>
+
+            <!-- Appointment -->
+            <div class="field">
+              <label for="date">Preferred date *</label>
+              <input
+                id="date"
+                name="date"
+                type="date"
+                required
+              >
+            </div>
+
+            <div class="field">
+              <label for="time">Preferred time</label>
+
+              <select id="time" name="time">
+                <option value="">Flexible</option>
+                <option value="Morning">Morning</option>
+                <option value="Afternoon">Afternoon</option>
+              </select>
+            </div>
+
+            <!-- Location -->
+            <div class="field full">
+              <label for="location">Your area / service location</label>
+              <input
+                id="location"
+                name="location"
+                type="text"
+                maxlength="180"
+                placeholder="Your area or location"
+              >
+            </div>
+
+            <!-- Description -->
+            <div class="field full">
+              <label for="details">Describe the issue *</label>
+
+              <textarea
+                id="details"
+                name="details"
+                required
+                maxlength="1500"
+                placeholder="Tell us what is happening with your motorcycle..."
+              ></textarea>
+            </div>
+
+          </div>
+
+          <!-- Status messages -->
+          <div
+            id="bookingStatus"
+            class="status"
+            role="status"
+            aria-live="polite"
+          ></div>
+
+          <!-- Submit -->
+          <button
+            class="btn btn-primary"
+            type="submit"
+            style="margin-top:18px"
+          >
+            Submit booking request
+          </button>
+
+        </form>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="copyright">
+        © <span data-year></span> JACT Motorcycle.
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
