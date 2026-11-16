@@ -12,18 +12,19 @@ document.addEventListener("DOMContentLoaded", () => {
     ).toISOString().slice(0, 10);
   }
 
-  // Support service presets in the URL
-  const preset = new URLSearchParams(location.search).get("service");
+  // Support service links, e.g. booking.html?service=Electrical%20repair
+  if (service) {
+    const preset = new URLSearchParams(location.search).get("service");
 
-  if (preset && service) {
-    const matchingOption = [...service.options].find(
-      option =>
-        option.value.toLowerCase() === preset.toLowerCase() ||
-        option.textContent.trim().toLowerCase() === preset.toLowerCase()
-    );
+    if (preset) {
+      const matchingOption = [...service.options].find(option =>
+        option.value.toLowerCase() === preset.trim().toLowerCase() ||
+        option.textContent.trim().toLowerCase() === preset.trim().toLowerCase()
+      );
 
-    if (matchingOption) {
-      service.value = matchingOption.value;
+      if (matchingOption) {
+        service.value = matchingOption.value;
+      }
     }
   }
 
@@ -38,17 +39,32 @@ async function submitBooking(event) {
 
   const form = document.getElementById("bookingForm");
   const status = document.getElementById("bookingStatus");
+  const submitButton = form.querySelector('button[type="submit"]');
 
   const get = id => {
     const element = document.getElementById(id);
     return element ? element.value.trim() : "";
   };
 
-  // Get motorcycle information
   const make = get("bike");
   const model = get("model");
 
-  // Build booking object using database column names
+  // Read the selected service directly from the form
+  const selectedService = get("service");
+
+  const allowedServices = [
+    "General repair",
+    "Electrical repair",
+    "Maintenance / service",
+    "Spare parts enquiry",
+    "Other"
+  ];
+
+  if (!allowedServices.includes(selectedService)) {
+    showStatus(status, "Please select a valid service.", "error");
+    return;
+  }
+
   const booking = {
     customer_name: get("name"),
     phone: get("phone"),
@@ -58,7 +74,7 @@ async function submitBooking(event) {
       .filter(Boolean)
       .join(" "),
 
-    service: get("service"),
+    service: selectedService,
 
     preferred_date: get("date"),
     preferred_time: get("time") || null,
@@ -78,31 +94,22 @@ async function submitBooking(event) {
     !booking.preferred_date ||
     !booking.details
   ) {
-    showStatus(
-      status,
-      "Please complete all required fields, including your motorcycle and service.",
-      "error"
-    );
+    showStatus(status, "Please complete all required fields.", "error");
     return;
   }
 
-  // Disable button while submitting
-  const button = form.querySelector('[type="submit"]');
-  const originalText = button ? button.textContent : "";
-
-  if (button) {
-    button.disabled = true;
-    button.textContent = "Submitting...";
-  }
+  if (!form.reportValidity()) return;
 
   try {
+    if (submitButton) {
+      submitButton.disabled = true;
+      submitButton.textContent = "Submitting...";
+    }
+
     const sb = await getSupabase();
 
-    // Check for existing active booking
-    const {
-      data: existing,
-      error: checkError
-    } = await sb
+    // Check for an existing active booking
+    const { data: existing, error: checkError } = await sb
       .from("bookings")
       .select("id")
       .eq("phone", booking.phone)
@@ -110,41 +117,34 @@ async function submitBooking(event) {
       .in("status", ["pending", "confirmed"])
       .limit(1);
 
-    if (checkError) {
-      throw checkError;
-    }
+    if (checkError) throw checkError;
 
     if (existing && existing.length > 0) {
       showStatus(
         status,
-        "There is already an active booking for this phone number on that date. Please contact JACT.",
+        "You already have an active booking request for this phone number on that date. Please contact JACT.",
         "error"
       );
       return;
     }
 
     // Insert booking into Supabase
-    const { data, error } = await sb
+    const { error } = await sb
       .from("bookings")
-      .insert([booking])
-      .select();
+      .insert(booking);
 
-    if (error) {
-      throw error;
-    }
-
-    console.log("Booking successfully saved:", data);
+    if (error) throw error;
 
     showStatus(
       status,
-      "Your booking request has been submitted successfully! JACT will contact you to confirm your appointment.",
-      "success"
+      "Your " + selectedService +
+      " booking request has been submitted successfully! JACT will contact you to confirm your appointment."
     );
 
     form.reset();
 
   } catch (error) {
-    console.error("Booking submission error:", error);
+    console.error("Booking error:", error);
 
     showStatus(
       status,
@@ -153,9 +153,9 @@ async function submitBooking(event) {
     );
 
   } finally {
-    if (button) {
-      button.disabled = false;
-      button.textContent = originalText;
+    if (submitButton) {
+      submitButton.disabled = false;
+      submitButton.textContent = "Submit booking request";
     }
   }
 }
