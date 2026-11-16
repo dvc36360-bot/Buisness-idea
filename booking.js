@@ -3,23 +3,29 @@ document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("bookingForm");
   const date = document.getElementById("date");
   const service = document.getElementById("service");
+  const time = document.getElementById("time");
 
-  // Prevent past dates
+  // Prevent dates in the past
   if (date) {
     const today = new Date();
+
     date.min = new Date(
       today.getTime() - today.getTimezoneOffset() * 60000
     ).toISOString().slice(0, 10);
   }
 
-  // Support service links, e.g. booking.html?service=Electrical%20repair
+  // Default preferred time
+  if (time && !time.value) {
+    time.value = "Flexible";
+  }
+
+  // Support service links with preset services
   if (service) {
     const preset = new URLSearchParams(location.search).get("service");
 
     if (preset) {
       const matchingOption = [...service.options].find(option =>
-        option.value.toLowerCase() === preset.trim().toLowerCase() ||
-        option.textContent.trim().toLowerCase() === preset.trim().toLowerCase()
+        option.value.toLowerCase() === preset.trim().toLowerCase()
       );
 
       if (matchingOption) {
@@ -46,10 +52,11 @@ async function submitBooking(event) {
     return element ? element.value.trim() : "";
   };
 
+  // Motorcycle details
   const make = get("bike");
   const model = get("model");
 
-  // Read the selected service directly from the form
+  // Selected service
   const selectedService = get("service");
 
   const allowedServices = [
@@ -65,6 +72,7 @@ async function submitBooking(event) {
     return;
   }
 
+  // Booking information
   const booking = {
     customer_name: get("name"),
     phone: get("phone"),
@@ -77,7 +85,9 @@ async function submitBooking(event) {
     service: selectedService,
 
     preferred_date: get("date"),
-    preferred_time: get("time") || null,
+
+    // Never send null for preferred_time
+    preferred_time: get("time") || "Flexible",
 
     location: get("location") || null,
     details: get("details"),
@@ -85,7 +95,7 @@ async function submitBooking(event) {
     status: "pending"
   };
 
-  // Validate required information
+  // Validate required fields
   if (
     !booking.customer_name ||
     !booking.phone ||
@@ -105,6 +115,8 @@ async function submitBooking(event) {
       submitButton.disabled = true;
       submitButton.textContent = "Submitting...";
     }
+
+    showStatus(status, "Submitting your booking request...");
 
     const sb = await getSupabase();
 
@@ -128,7 +140,7 @@ async function submitBooking(event) {
       return;
     }
 
-    // Insert booking into Supabase
+    // Save booking to Supabase
     const { error } = await sb
       .from("bookings")
       .insert(booking);
@@ -138,10 +150,16 @@ async function submitBooking(event) {
     showStatus(
       status,
       "Your " + selectedService +
-      " booking request has been submitted successfully! JACT will contact you to confirm your appointment."
+      " booking request was submitted successfully! JACT will contact you to confirm your appointment."
     );
 
     form.reset();
+
+    // Restore default time after reset
+    const timeField = document.getElementById("time");
+    if (timeField) {
+      timeField.value = "Flexible";
+    }
 
   } catch (error) {
     console.error("Booking error:", error);
