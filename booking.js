@@ -35,7 +35,7 @@ async function submitBooking(ev) {
     // Supabase vereis die kolom "motorcycle"
     motorcycle: [make, model].filter(Boolean).join(" "),
 
-    service_type: get("service"),
+    service: get("service"),
     preferred_date: get("date"),
     preferred_time: get("time") || null,
     location: get("location") || null,
