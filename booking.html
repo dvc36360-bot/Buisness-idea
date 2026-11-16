@@ -6,26 +6,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>Book a Service | JACT Motorcycle</title>
-  <meta name="description" content="Book your motorcycle repair, maintenance or service with JACT Motorcycle.">
+  <meta name="description" content="Book a motorcycle repair, electrical repair, maintenance or spare parts enquiry with JACT Motorcycle.">
 
   <link rel="stylesheet" href="styles.css">
 
-  <!-- Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-  <!-- Website configuration -->
   <script src="config.js"></script>
-
-  <!-- Shared website JavaScript -->
   <script defer src="app.js"></script>
-
-  <!-- Booking system -->
-  <script defer src="booking.js?v=3"></script>
+  <script defer src="booking.js?v=4"></script>
 </head>
 
 <body>
 
-  <!-- Top bar -->
   <div class="topbar">
     <div class="container">
       <span>Request a motorcycle service</span>
@@ -33,13 +25,11 @@
     </div>
   </div>
 
-  <!-- Header -->
   <header class="site-header">
     <div class="container nav">
 
       <a class="brand" href="index.html">
         <span class="brand-mark">J</span>
-
         <span>
           JACT MOTORCYCLE
           <small>REPAIRS · PARTS · SERVICE</small>
@@ -55,7 +45,7 @@
         <a href="contact.html">Contact</a>
       </nav>
 
-      <button class="menu-btn" type="button" aria-label="Open menu">
+      <button class="menu-btn" type="button" aria-label="Open navigation">
         ☰
       </button>
 
@@ -64,23 +54,22 @@
 
   <main>
 
-    <!-- Page hero -->
     <section class="page-hero">
       <div class="container">
 
-        <div class="eyebrow">Service request</div>
+        <div class="eyebrow">SERVICE REQUEST</div>
 
         <h1>Let's book your bike in.</h1>
 
         <p>
-          Send a booking request with your motorcycle details
-          and preferred date. JACT will review it and confirm availability.
+          Tell us what your motorcycle needs.
+          Submit a booking request and the JACT team
+          will contact you to confirm availability.
         </p>
 
       </div>
     </section>
 
-    <!-- Booking form -->
     <section class="section">
       <div class="container">
 
@@ -93,46 +82,44 @@
 
           <div class="form-grid">
 
-            <!-- Customer details -->
             <div class="field">
               <label for="name">Full name *</label>
               <input
-                id="name"
-                name="name"
                 type="text"
-                required
+                id="name"
+                name="customer_name"
+                placeholder="Your full name"
                 maxlength="100"
                 autocomplete="name"
-                placeholder="Your full name"
+                required
               >
             </div>
 
             <div class="field">
               <label for="phone">Phone number *</label>
               <input
+                type="tel"
                 id="phone"
                 name="phone"
-                type="tel"
-                required
+                placeholder="Your phone number"
                 maxlength="30"
                 autocomplete="tel"
-                placeholder="Your phone number"
+                required
               >
             </div>
 
             <div class="field">
-              <label for="email">Email (optional)</label>
+              <label for="email">Email address (optional)</label>
               <input
+                type="email"
                 id="email"
                 name="email"
-                type="email"
+                placeholder="Your email address"
                 maxlength="150"
                 autocomplete="email"
-                placeholder="Your email address"
               >
             </div>
 
-            <!-- Service -->
             <div class="field">
               <label for="service">Service required *</label>
 
@@ -146,79 +133,73 @@
               </select>
             </div>
 
-            <!-- Motorcycle details -->
             <div class="field">
               <label for="bike">Motorcycle make *</label>
               <input
-                id="bike"
-                name="bike"
                 type="text"
-                required
-                maxlength="80"
+                id="bike"
+                name="motorcycle_make"
                 placeholder="e.g. Yamaha"
+                maxlength="80"
+                required
               >
             </div>
 
             <div class="field">
               <label for="model">Model / year</label>
               <input
-                id="model"
-                name="model"
                 type="text"
+                id="model"
+                name="motorcycle_model"
+                placeholder="e.g. YZF R125 / 2022"
                 maxlength="100"
-                placeholder="e.g. R3 2022"
               >
             </div>
 
-            <!-- Appointment -->
             <div class="field">
               <label for="date">Preferred date *</label>
               <input
-                id="date"
-                name="date"
                 type="date"
+                id="date"
+                name="preferred_date"
                 required
               >
             </div>
 
             <div class="field">
               <label for="time">Preferred time</label>
-
-              <select id="time" name="time">
+              <select id="time" name="preferred_time">
                 <option value="">Flexible</option>
                 <option value="Morning">Morning</option>
                 <option value="Afternoon">Afternoon</option>
               </select>
             </div>
 
-            <!-- Location -->
             <div class="field full">
               <label for="location">Your area / service location</label>
               <input
+                type="text"
                 id="location"
                 name="location"
-                type="text"
+                placeholder="Your area or address"
                 maxlength="180"
-                placeholder="Your area or location"
+                autocomplete="street-address"
               >
             </div>
 
-            <!-- Description -->
             <div class="field full">
               <label for="details">Describe the issue *</label>
-
               <textarea
                 id="details"
                 name="details"
-                required
-                maxlength="1500"
                 placeholder="Tell us what is happening with your motorcycle..."
+                maxlength="1500"
+                required
               ></textarea>
             </div>
 
           </div>
 
-          <!-- Status messages -->
           <div
             id="bookingStatus"
             class="status"
@@ -226,7 +207,6 @@
             aria-live="polite"
           ></div>
 
-          <!-- Submit -->
           <button
             class="btn btn-primary"
             type="submit"
@@ -242,11 +222,11 @@
 
   </main>
 
-  <!-- Footer -->
   <footer class="footer">
     <div class="container">
       <div class="copyright">
         © <span data-year></span> JACT Motorcycle.
+        All rights reserved.
       </div>
     </div>
   </footer>
