@@ -1,9 +1,15 @@
 
-/* JACT Motorcycle admin logic.
-   Supabase RLS is the database security boundary.
-*/
+/* =========================================
+   JACT MOTORCYCLE - ADMIN SYSTEM
+   Supabase authentication and management
+========================================= */
 
 let jactAdmin = null;
+
+
+// =========================================
+// SUPABASE CLIENT
+// =========================================
 
 async function adminClient() {
   if (jactAdmin) return jactAdmin;
@@ -12,6 +18,11 @@ async function adminClient() {
 
   return jactAdmin;
 }
+
+
+// =========================================
+// HELPERS
+// =========================================
 
 function adminMessage(id, message, type = "success") {
   const el = document.getElementById(id);
@@ -32,7 +43,9 @@ function adminPage() {
 }
 
 
+// =========================================
 // ADMIN AUTHENTICATION
+// =========================================
 
 async function approvedAdmin(client, userId) {
   const { data, error } = await client
@@ -45,6 +58,7 @@ async function approvedAdmin(client, userId) {
 
   return !!data;
 }
+
 
 async function protectAdmin() {
   const client = await adminClient();
@@ -70,6 +84,7 @@ async function protectAdmin() {
 
   return true;
 }
+
 
 async function loginAdmin(event) {
   event.preventDefault();
@@ -113,6 +128,7 @@ async function loginAdmin(event) {
   }
 }
 
+
 async function logoutAdmin() {
   const client = await adminClient();
 
@@ -122,7 +138,9 @@ async function logoutAdmin() {
 }
 
 
+// =========================================
 // DASHBOARD
+// =========================================
 
 async function loadDashboard() {
   const client = await adminClient();
@@ -189,7 +207,9 @@ async function loadDashboard() {
 }
 
 
+// =========================================
 // PRODUCTS
+// =========================================
 
 async function loadProducts() {
   const client = await adminClient();
@@ -204,7 +224,8 @@ async function loadProducts() {
   if (error) throw error;
 
   if (!data.length) {
-    el.innerHTML = '<p class="muted">No products have been added yet.</p>';
+    el.innerHTML =
+      '<p class="muted">No products have been added yet.</p>';
     return;
   }
 
@@ -263,6 +284,7 @@ async function loadProducts() {
   });
 }
 
+
 async function saveProduct(event) {
   event.preventDefault();
 
@@ -305,6 +327,7 @@ async function saveProduct(event) {
   await loadProducts();
 }
 
+
 async function editProduct(id) {
   const client = await adminClient();
 
@@ -346,25 +369,31 @@ async function editProduct(id) {
   });
 }
 
+
 async function deleteProduct(id) {
   if (!confirm("Delete this product?")) return;
 
-  const client = await adminClient();
+  try {
+    const client = await adminClient();
 
-  const { error } = await client
-    .from("products")
-    .delete()
-    .eq("id", id);
+    const { error } = await client
+      .from("products")
+      .delete()
+      .eq("id", id);
 
-  if (error) {
-    alert(error.message);
-  } else {
+    if (error) throw error;
+
     await loadProducts();
+
+  } catch (error) {
+    alert("Could not delete product: " + error.message);
   }
 }
 
 
+// =========================================
 // BOOKINGS
+// =========================================
 
 async function loadBookings() {
   const client = await adminClient();
@@ -379,7 +408,8 @@ async function loadBookings() {
   if (error) throw error;
 
   if (!data.length) {
-    el.innerHTML = '<p class="muted">No booking requests yet.</p>';
+    el.innerHTML =
+      '<p class="muted">No booking requests yet.</p>';
     return;
   }
 
@@ -490,11 +520,9 @@ async function updateBooking(id) {
 
 
 async function deleteBooking(id) {
-  const confirmed = confirm(
+  if (!confirm(
     "Are you sure you want to permanently delete this booking?"
-  );
-
-  if (!confirmed) return;
+  )) return;
 
   try {
     const client = await adminClient();
@@ -516,7 +544,9 @@ async function deleteBooking(id) {
 }
 
 
+// =========================================
 // ORDERS
+// =========================================
 
 async function loadOrders() {
   const client = await adminClient();
@@ -531,7 +561,8 @@ async function loadOrders() {
   if (error) throw error;
 
   if (!data.length) {
-    el.innerHTML = '<p class="muted">No order enquiries yet.</p>';
+    el.innerHTML =
+      '<p class="muted">No order enquiries yet.</p>';
     return;
   }
 
@@ -543,7 +574,7 @@ async function loadOrders() {
         <th>Total</th>
         <th>Notes</th>
         <th>Status</th>
-        <th>Save</th>
+        <th>Actions</th>
       </tr>
     </thead>
 
@@ -582,6 +613,13 @@ async function loadOrders() {
               data-save-order="${o.id}">
               Save
             </button>
+
+            <button
+              type="button"
+              class="button button-small button-danger"
+              data-delete-order="${o.id}">
+              Delete
+            </button>
           </td>
         </tr>
       `).join("")}
@@ -593,34 +631,89 @@ async function loadOrders() {
       updateOrder(button.dataset.saveOrder);
     });
   });
+
+  el.querySelectorAll("[data-delete-order]").forEach(button => {
+    button.addEventListener("click", () => {
+      deleteOrder(button.dataset.deleteOrder);
+    });
+  });
 }
 
+
 async function updateOrder(id) {
-  const client = await adminClient();
+  try {
+    const client = await adminClient();
 
-  const value = document.querySelector(
-    `[data-order-status="${id}"]`
-  ).value;
+    const selector = document.querySelector(
+      `[data-order-status="${id}"]`
+    );
 
-  const { error } = await client
-    .from("orders")
-    .update({ status: value })
-    .eq("id", id);
+    if (!selector) return;
 
-  if (error) {
-    alert(error.message);
-  } else {
+    const { error } = await client
+      .from("orders")
+      .update({ status: selector.value })
+      .eq("id", id);
+
+    if (error) throw error;
+
     await loadOrders();
+
+  } catch (error) {
+    alert("Could not update order: " + error.message);
   }
 }
 
 
+// =========================================
+// DELETE ORDER + ORDER ITEMS
+// =========================================
+
+async function deleteOrder(id) {
+  const confirmed = confirm(
+    "Are you sure you want to permanently delete this order and its items?"
+  );
+
+  if (!confirmed) return;
+
+  try {
+    const client = await adminClient();
+
+    // First delete the related order items
+    const { error: itemsError } = await client
+      .from("order_items")
+      .delete()
+      .eq("order_id", id);
+
+    if (itemsError) throw itemsError;
+
+    // Then delete the main order
+    const { error: orderError } = await client
+      .from("orders")
+      .delete()
+      .eq("id", id);
+
+    if (orderError) throw orderError;
+
+    alert("Order deleted successfully!");
+
+    await loadOrders();
+
+  } catch (error) {
+    alert("Could not delete order: " + error.message);
+  }
+}
+
+
+// =========================================
 // PAGE INITIALISATION
+// =========================================
 
 document.addEventListener("DOMContentLoaded", async () => {
 
   const page = adminPage();
 
+  // LOGIN PAGE
   if (page === "login.html") {
     document
       .getElementById("login-form")
@@ -629,6 +722,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     return;
   }
 
+  // PROTECTED ADMIN PAGES
   if (document.body.dataset.protected !== "yes") return;
 
   try {
@@ -639,17 +733,23 @@ document.addEventListener("DOMContentLoaded", async () => {
       .getElementById("logout-btn")
       ?.addEventListener("click", logoutAdmin);
 
+
+    // DASHBOARD
     if (page === "dashboard.html") {
       await loadDashboard();
     }
 
+
+    // PRODUCTS
     if (page === "products.html") {
 
       document
         .getElementById("product-form")
         ?.addEventListener("submit", async event => {
+
           try {
             await saveProduct(event);
+
           } catch (err) {
             adminMessage(
               "product-message",
@@ -657,15 +757,20 @@ document.addEventListener("DOMContentLoaded", async () => {
               "error"
             );
           }
+
         });
 
       await loadProducts();
     }
 
+
+    // BOOKINGS
     if (page === "bookings.html") {
       await loadBookings();
     }
 
+
+    // ORDERS
     if (page === "orders.html") {
       await loadOrders();
     }
